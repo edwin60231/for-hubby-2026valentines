@@ -51,6 +51,11 @@
         .player-controls { display: flex; align-items: center; gap: 16px; }
         .control-btn { background: none; border: none; color: #b3b3b3; cursor: pointer; font-size: 16px; }
         .control-btn:hover { color: #fff; }
+        /* 循環按鈕樣式 */
+        .loop-btn { background: none; border: none; color: #b3b3b3; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px; }
+        .loop-btn:hover { color: #fff; }
+        .loop-btn.active { color: #1ed760; }
+
         .bottom-play-btn { width: 32px; height: 32px; background: #fff; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #000; }
         .progress-container { display: flex; align-items: center; gap: 8px; width: 100%; font-size: 11px; color: #b3b3b3; }
         .progress-bar-bg { flex: 1; height: 4px; background: #4f4f4f; border-radius: 2px; position: relative; cursor: pointer; }
@@ -193,6 +198,12 @@ Happy Valentine's Day, Hubby.</div>
                         <svg id="footerPlayIcon" height="14" width="14" viewBox="0 0 24 24" fill="#000"><polygon points="5.5,3 19,12 5.5,21" /></svg>
                     </button>
                     <button class="control-btn" onclick="togglePlay()">⏭</button>
+                    <!-- 單曲循環按鈕 -->
+                    <button class="loop-btn" id="loopBtn" onclick="toggleLoop()" title="單曲循環">
+                        <svg height="16" width="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
+                        </svg>
+                    </button>
                 </div>
                 <div class="progress-container">
                     <span id="currentTime">0:00</span>
@@ -219,6 +230,9 @@ Happy Valentine's Day, Hubby.</div>
         const footerPlayBtn = document.getElementById('footerPlayBtn');
         const progressFill = document.getElementById('progressFill');
         const currentTimeEl = document.getElementById('currentTime');
+        const loopBtn = document.getElementById('loopBtn');
+
+        let isLooping = false;
 
         function togglePlay() {
             if (audio.paused) {
@@ -246,6 +260,17 @@ Happy Valentine's Day, Hubby.</div>
             }
         }
 
+        // 切換單曲循環功能
+        function toggleLoop() {
+            isLooping = !isLooping;
+            audio.loop = isLooping;
+            if (isLooping) {
+                loopBtn.classList.add('active');
+            } else {
+                loopBtn.classList.remove('active');
+            }
+        }
+
         audio.addEventListener('timeupdate', () => {
             if (audio.duration) {
                 const percent = (audio.currentTime / audio.duration) * 100;
@@ -259,9 +284,14 @@ Happy Valentine's Day, Hubby.</div>
         });
 
         audio.addEventListener('ended', () => {
-            updatePlayButtons(false);
-            progressFill.style.width = '0%';
-            currentTimeEl.textContent = '0:00';
+            if (!isLooping) {
+                updatePlayButtons(false);
+                progressFill.style.width = '0%';
+                currentTimeEl.textContent = '0:00';
+            } else {
+                // 如果有開啟循環，確保按鈕維持播放狀態
+                audio.play();
+            }
         });
 
         function seekAudio(event) {

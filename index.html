@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -38,9 +37,11 @@
         .song-row:hover { background: rgba(255,255,255,0.1); }
         .song-info { display: flex; align-items: center; gap: 12px; }
         
-        /* Sidebar Right */
-        .sidebar-right { width: 300px; background: #121212; border-radius: 8px; padding: 16px; color: #fff; overflow-y: auto; }
-        .right-art { width: 100%; aspect-ratio: 1; background: url('https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=500&auto=format&fit=crop&q=60'); background-size: cover; background-position: center; border-radius: 6px; margin-bottom: 15px; }
+        /* Sidebar Right (保留上方區塊並在下方加歌詞) */
+        .sidebar-right { width: 320px; background: #121212; border-radius: 8px; padding: 16px; color: #fff; overflow-y: auto; display: flex; flex-direction: column; }
+        .right-art { width: 100%; aspect-ratio: 1; background: url('https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=500&auto=format&fit=crop&q=60'); background-size: cover; background-position: center; border-radius: 6px; margin-bottom: 15px; flex-shrink: 0; }
+        .lyrics-section { margin-top: 20px; border-top: 1px solid #282828; padding-top: 15px; }
+        .lyrics-content { white-space: pre-line; color: #b3b3b3; font-size: 13px; line-height: 1.8; font-family: inherit; }
 
         /* Player Bar (Bottom) */
         .player-bar { height: 90px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #181818; background: #000; position: fixed; bottom: 0; width: 100%; z-index: 1000; }
@@ -111,12 +112,67 @@
                 </table>
             </main>
 
-            <!-- 右側資訊欄 -->
+            <!-- 右側資訊欄與下方歌詞 -->
             <aside class="sidebar-right">
                 <h3 style="margin-top:0; font-size:16px;">慢慢來比較快</h3>
                 <div class="right-art"></div>
                 <p style="font-weight:bold; margin:0 0 5px 0; color:#fff;">edwina60231</p>
-                <p style="font-size:13px; color:#b3b3b3; margin:0;">專屬於你的浪漫旋律，慢慢聽～ ❤️</p>
+                <p style="font-size:13px; color:#b3b3b3; margin:0 0 15px 0;">專屬於你的浪漫旋律，慢慢聽～ ❤️</p>
+                
+                <div class="lyrics-section">
+                    <h4 style="color:#fff; margin:0 0 10px 0; font-size:14px;">歌詞</h4>
+                    <div class="lyrics-content">Yeah... This one’s for my hubby. 2026.valentines
+
+[Verse 1 - Rap: 說唱風格，像是在說故事般娓娓道來，Chill Flow]
+故事從二月說起，那個打噴嚏的早晨
+你笑我是鼻涕蟲卻叮嚀我喝溫水保溫
+穿著你那件外套，淡淡香味還弄不見
+你說為了我刪掉 Bumble，只想陪我一個人瘋
+媽媽突然出現
+慌張掛了電話，內疚道歉一整夜
+我冷酷的外表下，其實早就被你攻陷
+因為你說我是你心中，最理想女友的畫面
+
+慢慢來，比較快，這是我們的節拍
+欠疼的女孩，想要好好照顧
+我們不用去算誰比較辛苦
+等了二十九年，原來這女孩就是我的歸屬
+
+時間來到三月，準備迎接新工作的挑戰
+三月三十號報到，說好要一起把未來填滿
+老闆給的難題，剩幾分鐘伺服器還在搗蛋
+我寫下 definition，只要有你在就是 happy_loop
+你回我 yield All Good，工程師的浪漫讓我偷哭
+約好去台中打麻將，輸錢算你的
+你說把我捧在手心，但你還是需要用嘴巴呼吸
+
+慢慢來，比較快，這是我們的節拍
+欠疼的女孩，總想把我保護
+南寮吹風，陪你看單身及地獄的節目
+不再害怕孤終老，不再迷途
+你是月老給我的禮物，慢慢走這條幸福路
+
+未來的四月五月，一直到慢慢變老
+討論以後的小孩，你說長得醜醜你也好
+你超有自信，覺得我們基因沒煩惱
+我說生完小孩也要愛情，你說老婆永遠是最好
+我的淺色指甲，剛好是你最喜歡的步調
+你不完美主義，忘東忘西批人個性
+在我眼裡你已經無可救藥
+這首客製化的歌，專屬翁寶的微笑
+
+慢慢來，比較快，這是我們的節拍
+欠疼的女孩，永遠被你照顧
+遇到理想情人說不愛也會結婚
+寫下更多Hubby&Wifey的紀錄
+你說我值得被疼愛，誒誒男直接變大戶
+
+Yeah, with_Weng(normal_life)
+System Optimized: It's good to have you
+就算有時候會感冒流鼻水...
+有你當我的特效藥，0 Errors
+Happy Valentine's Day, Hubby.</div>
+                </div>
             </aside>
         </div>
 

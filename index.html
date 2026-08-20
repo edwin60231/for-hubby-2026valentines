@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Spotify Web Clone - 慢慢來比較快</title>
+    <title>Spotify Web Clone - 慢慢來比較快 & 淘金小鎮sing sing歌</title>
     <style>
         * { box-sizing: border-box; }
         body, html { margin: 0; padding: 0; height: 100%; background: #000; color: #b3b3b3; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; overflow: hidden; }
@@ -22,13 +22,24 @@
         .content-panel { flex: 1; background: linear-gradient(to bottom, #535353, #121212); border-radius: 8px; overflow-y: auto; padding: 24px; color: #fff; }
         .hero-section { display: flex; align-items: flex-end; gap: 24px; padding-bottom: 24px; }
         .album-art { width: 232px; height: 232px; background: #333; box-shadow: 0 4px 60px rgba(0,0,0,0.5); background-image: url('https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=500&auto=format&fit=crop&q=60'); background-size: cover; background-position: center; border-radius: 4px; }
-        .playlist-title { font-size: 56px; font-weight: 900; margin: 0; }
+        .playlist-title { font-size: 42px; font-weight: 900; margin: 0; }
         
         /* Action bar */
-        .action-bar { display: flex; align-items: center; gap: 24px; margin-bottom: 30px; }
+        .action-bar { display: flex; align-items: center; gap: 24px; margin-bottom: 20px; }
         .play-btn { width: 56px; height: 56px; background: #1ed760; border-radius: 50%; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.3); transition: transform 0.1s; }
         .play-btn:hover { transform: scale(1.05); background: #1fdf64; }
         
+        /* Game Section inside Content Panel */
+        .game-section { background: rgba(0, 0, 0, 0.4); border-radius: 8px; padding: 20px; margin-top: 20px; border: 1px solid #282828; }
+        .game-title { font-size: 24px; font-weight: bold; margin-bottom: 10px; color: #1ed760; }
+        .game-player-bar { display: flex; align-items: center; gap: 15px; background: #181818; padding: 12px; border-radius: 6px; margin-bottom: 20px; }
+        .game-lyrics-container { line-height: 2.5; font-size: 16px; color: #fff; }
+        /* 放大挖空輸入框，確保字看得清楚 */
+        .game-lyrics-container input { background: #282828; border: 1px solid #4f4f4f; border-radius: 4px; color: #fff; padding: 4px 2px; font-size: 15px; margin: 0 4px; outline: none; width: 38px; text-align: center; }
+        .game-lyrics-container input:focus { border-color: #1ed760; }
+        .submit-line-btn { background: #1ed760; color: #000; border: none; padding: 12px 24px; border-radius: 20px; font-weight: bold; cursor: pointer; margin-top: 20px; font-size: 15px; transition: transform 0.1s; }
+        .submit-line-btn:hover { transform: scale(1.02); background: #1fdf64; }
+
         /* Song List Table */
         .song-table { width: 100%; border-collapse: collapse; }
         .song-table th { text-align: left; color: #b3b3b3; font-weight: normal; border-bottom: 1px solid #282828; padding-bottom: 8px; font-size: 14px; }
@@ -37,25 +48,22 @@
         .song-row:hover { background: rgba(255,255,255,0.1); }
         .song-info { display: flex; align-items: center; gap: 12px; }
         
-        /* Sidebar Right (保留上方區塊並在下方加歌詞) */
+        /* Sidebar Right */
         .sidebar-right { width: 320px; background: #121212; border-radius: 8px; padding: 16px; color: #fff; overflow-y: auto; display: flex; flex-direction: column; }
         .right-art { width: 100%; aspect-ratio: 1; background: url('https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=500&auto=format&fit=crop&q=60'); background-size: cover; background-position: center; border-radius: 6px; margin-bottom: 15px; flex-shrink: 0; }
         .lyrics-section { margin-top: 20px; border-top: 1px solid #282828; padding-top: 15px; }
         .lyrics-content { white-space: pre-line; color: #b3b3b3; font-size: 13px; line-height: 1.8; font-family: inherit; }
 
-        /* Player Bar (Bottom) */
+        /* Player Bar (Bottom - controls song.mp3) */
         .player-bar { height: 90px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #181818; background: #000; position: fixed; bottom: 0; width: 100%; z-index: 1000; }
         .player-left { display: flex; align-items: center; gap: 12px; width: 250px; }
-        .player-left img { width: 56px; height: 56px; border-radius: 4px; object-fit: cover; }
         .player-center { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; max-width: 600px; }
         .player-controls { display: flex; align-items: center; gap: 16px; }
         .control-btn { background: none; border: none; color: #b3b3b3; cursor: pointer; font-size: 16px; }
         .control-btn:hover { color: #fff; }
-        /* 循環按鈕樣式 */
         .loop-btn { background: none; border: none; color: #b3b3b3; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px; }
         .loop-btn:hover { color: #fff; }
         .loop-btn.active { color: #1ed760; }
-
         .bottom-play-btn { width: 32px; height: 32px; background: #fff; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; color: #000; }
         .progress-container { display: flex; align-items: center; gap: 8px; width: 100%; font-size: 11px; color: #b3b3b3; }
         .progress-bar-bg { flex: 1; height: 4px; background: #4f4f4f; border-radius: 2px; position: relative; cursor: pointer; }
@@ -81,7 +89,7 @@
                     <div>
                         <p style="margin:0 0 8px 0; font-size:14px; font-weight:bold;">公開的播放清單</p>
                         <h1 class="playlist-title">慢慢來比較快</h1>
-                        <p style="margin:12px 0 0 0; color:#b3b3b3; font-size:14px;"><strong style="color:#fff;">edwina60231</strong> • 2026 • 1 首歌曲，3 分 23 秒</p>
+                        <p style="margin:12px 0 0 0; color:#b3b3b3; font-size:14px;"><strong style="color:#fff;">edwina60231</strong> • 2026 • 2 首歌曲[cite: 8]</p>
                     </div>
                 </div>
 
@@ -113,8 +121,45 @@
                             </td>
                             <td style="text-align: right; padding-right: 20px; color: #b3b3b3; font-size: 14px;">3:23</td>
                         </tr>
+                        <tr class="song-row" onclick="toggleGamePlay()">
+                            <td style="text-align: center; color: #b3b3b3;">2</td>
+                            <td>
+                                <div class="song-info">
+                                    <div style="width: 40px; height: 40px; background-image: url('https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=100'); background-size: cover; border-radius: 4px;"></div>
+                                    <div>
+                                        <div style="color: #fff; font-size: 15px;">有老公的孩子像個寶</div>
+                                        <div style="font-size: 13px; color: #b3b3b3;">edwina60231 (淘金小鎮盲猜區)</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td style="text-align: right; padding-right: 20px; color: #b3b3b3; font-size: 14px;">Game</td>
+                        </tr>
                     </tbody>
                 </table>
+
+                <!-- 遊戲區塊：淘金小鎮sing sing歌 -->
+                <div class="game-section">
+                    <div class="game-title">✨ 淘金小鎮sing sing歌 ✨</div>
+                    <p style="font-size: 13px; color: #b3b3b3; margin-bottom: 15px;">播放下方專屬歌曲，聽出歌詞並填入空格中，完成後點擊按鈕一鍵複製貼給 Wifey 吧！</p>
+                    
+                    <div class="game-player-bar">
+                        <button class="bottom-play-btn" id="gamePlayBtn" onclick="toggleGamePlay()">
+                            <svg id="gamePlayIcon" height="14" width="14" viewBox="0 0 24 24" fill="#000"><polygon points="5.5,3 19,12 5.5,21" /></svg>
+                        </button>
+                        <span style="font-size: 14px; font-weight: bold; color: #fff;">有老公的孩子像個寶 (song1.mp3)</span>
+                        <div class="progress-container" style="max-width: 300px; margin-left: auto;">
+                            <span id="gameCurrentTime">0:00</span>
+                            <div class="progress-bar-bg" id="gameProgressBarBg" onclick="seekGameAudio(event)">
+                                <div class="progress-bar-fill" id="gameProgressFill" style="width: 0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 挖空歌詞填寫區 -->
+                    <div class="game-lyrics-container" id="gameLyricsContainer"></div>
+
+                    <button class="submit-line-btn" onclick="copyAnswersToLine()">📋 複製整段答案，貼到line給wifey</button>
+                </div>
             </main>
 
             <!-- 右側資訊欄與下方歌詞 -->
@@ -181,7 +226,7 @@ Happy Valentine's Day, Hubby.</div>
             </aside>
         </div>
 
-        <!-- 底部控制條 -->
+        <!-- 底部控制條 (控制 song.mp3) -->
         <footer class="player-bar">
             <div class="player-left">
                 <div style="width: 56px; height: 56px; background-image: url('https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=100'); background-size: cover; border-radius: 4px;"></div>
@@ -198,7 +243,6 @@ Happy Valentine's Day, Hubby.</div>
                         <svg id="footerPlayIcon" height="14" width="14" viewBox="0 0 24 24" fill="#000"><polygon points="5.5,3 19,12 5.5,21" /></svg>
                     </button>
                     <button class="control-btn" onclick="togglePlay()">⏭</button>
-                    <!-- 單曲循環按鈕 -->
                     <button class="loop-btn" id="loopBtn" onclick="toggleLoop()" title="單曲循環">
                         <svg height="16" width="16" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
@@ -221,17 +265,18 @@ Happy Valentine's Day, Hubby.</div>
         </footer>
     </div>
 
-    <!-- 音訊元素 -->
+    <!-- 雙音訊元素 -->
     <audio id="bgm" src="song.mp3" preload="auto"></audio>
+    <audio id="song1" src="song1.mp3" preload="auto"></audio>
 
     <script>
+        // 主歌 (song.mp3) 控制邏輯
         const audio = document.getElementById('bgm');
         const mainPlayBtn = document.getElementById('mainPlayBtn');
         const footerPlayBtn = document.getElementById('footerPlayBtn');
         const progressFill = document.getElementById('progressFill');
         const currentTimeEl = document.getElementById('currentTime');
         const loopBtn = document.getElementById('loopBtn');
-
         let isLooping = false;
 
         function togglePlay() {
@@ -250,7 +295,6 @@ Happy Valentine's Day, Hubby.</div>
         function updatePlayButtons(isPlaying) {
             const pauseSvg = '<rect x="6" y="4" width="4" height="16" fill="currentColor"/><rect x="14" y="4" width="4" height="16" fill="currentColor"/>';
             const playSvg = '<polygon points="5.5,3 19,12 5.5,21" fill="currentColor"/>';
-            
             if (isPlaying) {
                 mainPlayBtn.innerHTML = `<svg height="24" width="24" viewBox="0 0 24 24" fill="#000">${pauseSvg}</svg>`;
                 footerPlayBtn.innerHTML = `<svg height="14" width="14" viewBox="0 0 24 24" fill="#000">${pauseSvg}</svg>`;
@@ -260,7 +304,6 @@ Happy Valentine's Day, Hubby.</div>
             }
         }
 
-        // 切換單曲循環功能
         function toggleLoop() {
             isLooping = !isLooping;
             audio.loop = isLooping;
@@ -275,7 +318,6 @@ Happy Valentine's Day, Hubby.</div>
             if (audio.duration) {
                 const percent = (audio.currentTime / audio.duration) * 100;
                 progressFill.style.width = percent + '%';
-                
                 let mins = Math.floor(audio.currentTime / 60);
                 let secs = Math.floor(audio.currentTime % 60);
                 if (secs < 10) secs = '0' + secs;
@@ -289,7 +331,6 @@ Happy Valentine's Day, Hubby.</div>
                 progressFill.style.width = '0%';
                 currentTimeEl.textContent = '0:00';
             } else {
-                // 如果有開啟循環，確保按鈕維持播放狀態
                 audio.play();
             }
         });
@@ -305,6 +346,214 @@ Happy Valentine's Day, Hubby.</div>
 
         function changeVolume(val) {
             audio.volume = val;
+            document.getElementById('song1').volume = val;
+        }
+
+        // 遊戲專屬歌曲 (song1.mp3) 控制邏輯
+        const gameAudio = document.getElementById('song1');
+        const gamePlayBtn = document.getElementById('gamePlayBtn');
+        const gameProgressFill = document.getElementById('gameProgressFill');
+        const gameCurrentTimeEl = document.getElementById('gameCurrentTime');
+
+        function toggleGamePlay() {
+            if (gameAudio.paused) {
+                gameAudio.play().then(() => {
+                    updateGamePlayButton(true);
+                }).catch(e => {
+                    alert("請確認同資料夾是否有 song1.mp3 檔案！");
+                });
+            } else {
+                gameAudio.pause();
+                updateGamePlayButton(false);
+            }
+        }
+
+        function updateGamePlayButton(isPlaying) {
+            const pauseSvg = '<rect x="5" y="4" width="4" height="16" fill="currentColor"/><rect x="15" y="4" width="4" height="16" fill="currentColor"/>';
+            const playSvg = '<polygon points="5.5,3 19,12 5.5,21" fill="currentColor"/>';
+            if (isPlaying) {
+                gamePlayBtn.innerHTML = `<svg height="14" width="14" viewBox="0 0 24 24" fill="#000">${pauseSvg}</svg>`;
+            } else {
+                gamePlayBtn.innerHTML = `<svg height="14" width="14" viewBox="0 0 24 24" fill="#000">${playSvg}</svg>`;
+            }
+        }
+
+        gameAudio.addEventListener('timeupdate', () => {
+            if (gameAudio.duration) {
+                const percent = (gameAudio.currentTime / gameAudio.duration) * 100;
+                gameProgressFill.style.width = percent + '%';
+                let mins = Math.floor(gameAudio.currentTime / 60);
+                let secs = Math.floor(gameAudio.currentTime % 60);
+                if (secs < 10) secs = '0' + secs;
+                gameCurrentTimeEl.textContent = `${mins}:${secs}`;
+            }
+        });
+
+        gameAudio.addEventListener('ended', () => {
+            updateGamePlayButton(false);
+            gameProgressFill.style.width = '0%';
+            gameCurrentTimeEl.textContent = '0:00';
+        });
+
+        function seekGameAudio(event) {
+            const bg = document.getElementById('gameProgressBarBg');
+            const rect = bg.getBoundingClientRect();
+            const pos = (event.clientX - rect.left) / bg.offsetWidth;
+            if (gameAudio.duration) {
+                gameAudio.currentTime = pos * gameAudio.duration;
+            }
+        }
+
+        // 動態生成盲猜歌詞挖空介面 (不將整首完整歌詞明文寫在 HTML 原始碼中)
+        const rawLyricsLines = [
+            "清晨鳥兒叫得那麼大聲，",
+            "啾啾啾晚上換我們去吵他們。",
+            "早上開車載我出門去上班，",
+            "不用搭公車還有香蕉早餐。",
+            "誰說霸氣又黏人感覺很安全，",
+            "我說他其實每次都洗澡不洗臉。",
+            "",
+            "有老公的孩子就像個寶，",
+            "不讓你去加油站獨自煩惱。",
+            "油箱蓋打不開開到引擎蓋，",
+            "[大勝]武安侯，殺豬養我每天都有控肉。",
+            "你說你無時無刻都想把我擁抱，",
+            "但寶貝，為什麼每次愛我都不say out loud。",
+            "",
+            "為了你帶上HDMI跟轉接頭，",
+            "什麼[3C]歌詞，baby take it slow",
+            "看著那台OVO小蘋果投影機，",
+            "從逐玉追到進擊into the unknown",
+            "[B2]有了新車位，[盤子]才月付九千，",
+            "哦，我不是盤子是筷子，快窮到脫褲子 ya",
+            "",
+            "有老公的孩子就像個寶，",
+            "不是巨人進擊但疼你總是without doubt。",
+            "加油打開引擎蓋還是覺得好可愛，",
+            "[大勝]武安侯，你在哪裡就是home。",
+            "",
+            "[你說我無時無刻都想把你擁抱]，",
+            "阿嬤給的香蕉包得好好的不會黑掉，",
+            "就像我們的感情永遠不退潮。[但是有果蠅]",
+            "外送點了桂圓茶，阿嬤還問有沒有金珠，",
+            "被老公疼愛的每一天都好滿足。",
+            "",
+            "已經取好票了，信箱是danny[092608]，",
+            "接完獵頭的電話，未來的路我們一起走吧。",
+            "就算你去酒局我也想跟著保護你，",
+            "跳著高興的雙人舞，你是我的母雞。",
+            "",
+            "有老公的孩子就像個寶，",
+            "股票要聽爸爸的趕快先跑。",
+            "引擎蓋到底怎麼開真的好可愛，",
+            "[大勝]武安侯，下一首可以唱陳華song。",
+            "依然站在我左邊的人，希望不是南亞科",
+            "[沒有啦]，老公我說你東西用完要收！"
+        ];
+
+        const container = document.getElementById('gameLyricsContainer');
+        const inputElements = [];
+
+        rawLyricsLines.forEach((line) => {
+            const lineDiv = document.createElement('div');
+            if (line === "") {
+                lineDiv.style.height = "12px";
+                container.appendChild(lineDiv);
+                return;
+            }
+
+            // 解析中括號固定字與未括號挖空字
+            let regex = /\[(.*?)\]/g;
+            let lastIdx = 0;
+            let match;
+
+            while ((match = regex.exec(line)) !== null) {
+                // 前面未刮號的部分要挖空
+                let plainText = line.substring(lastIdx, match.index);
+                if (plainText.length > 0) {
+                    appendBlanks(plainText, lineDiv);
+                }
+                // 括號內的固定字直接顯示
+                let fixedSpan = document.createElement('span');
+                fixedSpan.textContent = match[1];
+                fixedSpan.style.color = "#1ed760";
+                fixedSpan.style.fontWeight = "bold";
+                lineDiv.appendChild(fixedSpan);
+
+                lastIdx = regex.lastIndex;
+            }
+
+            // 處理剩餘的未刮號部分
+            let remainingText = line.substring(lastIdx);
+            if (remainingText.length > 0) {
+                appendBlanks(remainingText, lineDiv);
+            }
+
+            container.appendChild(lineDiv);
+        });
+
+        function appendBlanks(text, parentElement) {
+            // 每個字或詞轉換成一個輸入框，確保長度能填進去
+            for (let i = 0; i < text.length; i++) {
+                let char = text[i];
+                if (char === '，' || char === '。' || char === '！' || char === '？' || char === '～') {
+                    let punc = document.createElement('span');
+                    punc.textContent = char;
+                    parentElement.appendChild(punc);
+                } else {
+                    let input = document.createElement('input');
+                    input.type = 'text';
+                    input.dataset.expected = char;
+                    parentElement.appendChild(input);
+                    inputElements.push(input);
+                }
+            }
+        }
+
+        // 一鍵複製組合答案到 Line
+        function copyAnswersToLine() {
+            let fullResult = "";
+            let idx = 0;
+            rawLyricsLines.forEach((line) => {
+                if (line === "") {
+                    fullResult += "\n";
+                    return;
+                }
+                let regex = /\[(.*?)\]/g;
+                let lastIdx = 0;
+                let match;
+                while ((match = regex.exec(line)) !== null) {
+                    let plainText = line.substring(lastIdx, match.index);
+                    for (let i = 0; i < plainText.length; i++) {
+                        let char = plainText[i];
+                        if (char === '，' || char === '。' || char === '！' || char === '？' || char === '～') {
+                            fullResult += char;
+                        } else {
+                            fullResult += (inputElements[idx].value || "＿");
+                            idx++;
+                        }
+                    }
+                    fullResult += "[" + match[1] + "]";
+                    lastIdx = regex.lastIndex;
+                }
+                let remainingText = line.substring(lastIdx);
+                for (let i = 0; i < remainingText.length; i++) {
+                    let char = remainingText[i];
+                    if (char === ' , ' || char === '，' || char === '。' || char === '！' || char === '？' || char === '～') {
+                        fullResult += char;
+                    } else {
+                        fullResult += (inputElements[idx].value || "＿");
+                        idx++;
+                    }
+                }
+                fullResult += "\n";
+            });
+
+            navigator.clipboard.writeText(fullResult).then(() => {
+                alert("✅ 答案已成功複製！快去 Line 貼給 Wifey 吧！❤️");
+            }).catch(err => {
+                alert("複製失敗，請手動複製。");
+            });
         }
     </script>
 </body>

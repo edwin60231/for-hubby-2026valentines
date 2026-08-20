@@ -208,7 +208,7 @@
 我說生完小孩也要愛情，你說老婆永遠是最好
 我的淺色指甲，剛好是你最喜歡的步調
 你不完美主義，忘東忘西批人個性
-在我眼裡你已經無可救藥
+在我眼裡你已經無可藥救
 這首客製化的歌，專屬翁寶的微笑
 
 慢慢來，比較快，這是我們的節拍
@@ -281,6 +281,12 @@ Happy Valentine's Day, Hubby.</div>
 
         function togglePlay() {
             if (audio.paused) {
+                // 自動暫停另一首遊戲音樂
+                if (!gameAudio.paused) {
+                    gameAudio.pause();
+                    updateGamePlayButton(false);
+                }
+                
                 audio.play().then(() => {
                     updatePlayButtons(true);
                 }).catch(e => {
@@ -357,6 +363,12 @@ Happy Valentine's Day, Hubby.</div>
 
         function toggleGamePlay() {
             if (gameAudio.paused) {
+                // 自動暫停另一首主音樂
+                if (!audio.paused) {
+                    audio.pause();
+                    updatePlayButtons(false);
+                }
+
                 gameAudio.play().then(() => {
                     updateGamePlayButton(true);
                 }).catch(e => {
@@ -504,6 +516,19 @@ Happy Valentine's Day, Hubby.</div>
                     let input = document.createElement('input');
                     input.type = 'text';
                     input.dataset.expected = char;
+                    
+                    // 新增：按下 Enter 鍵跳到下一個輸入框
+                    input.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter') {
+                            e.preventDefault();
+                            const currentIndex = inputElements.indexOf(input);
+                            if (currentIndex !== -1 && currentIndex + 1 < inputElements.length) {
+                                inputElements[currentIndex + 1].focus();
+                                inputElements[currentIndex + 1].select();
+                            }
+                        }
+                    });
+
                     parentElement.appendChild(input);
                     inputElements.push(input);
                 }
